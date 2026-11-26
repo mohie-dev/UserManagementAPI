@@ -1,0 +1,73 @@
+@UserManagementAPI_HostAddress = https://localhost:7027
+@DemoToken = demo-token-123
+@userId = 1
+@missingUserId = 99999
+
+### OpenAPI document (no token required in Development)
+GET {{UserManagementAPI_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+### Get users without a token (expect 401 Unauthorized)
+GET {{UserManagementAPI_HostAddress}}/api/users
+Accept: application/json
+
+### Get all users
+GET {{UserManagementAPI_HostAddress}}/api/users
+Accept: application/json
+Authorization: Bearer {{DemoToken}}
+
+### Create a user
+POST {{UserManagementAPI_HostAddress}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{DemoToken}}
+
+{
+  "fullName": "Alex Morgan",
+  "email": "alex.morgan@techhive.example",
+  "department": "Engineering"
+}
+
+### Get the created user (assumes a fresh in-memory store)
+GET {{UserManagementAPI_HostAddress}}/api/users/{{userId}}
+Accept: application/json
+Authorization: Bearer {{DemoToken}}
+
+### Get a user that does not exist (expect 404 Not Found)
+GET {{UserManagementAPI_HostAddress}}/api/users/{{missingUserId}}
+Accept: application/json
+Authorization: Bearer {{DemoToken}}
+
+### Update the user (expect 204 No Content)
+PUT {{UserManagementAPI_HostAddress}}/api/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{DemoToken}}
+
+{
+  "fullName": "Alex Morgan",
+  "email": "alex.morgan@techhive.example",
+  "department": "Product"
+}
+
+### Verify the update
+GET {{UserManagementAPI_HostAddress}}/api/users/{{userId}}
+Accept: application/json
+Authorization: Bearer {{DemoToken}}
+
+### Update a user that does not exist (expect 404 Not Found)
+PUT {{UserManagementAPI_HostAddress}}/api/users/{{missingUserId}}
+Content-Type: application/json
+Authorization: Bearer {{DemoToken}}
+
+{
+  "fullName": "Missing User",
+  "email": "missing@techhive.example",
+  "department": "Engineering"
+}
+
+### Delete the user (expect 204 No Content)
+DELETE {{UserManagementAPI_HostAddress}}/api/users/{{userId}}
+Authorization: Bearer {{DemoToken}}
+
+### Delete a user that does not exist (expect 404 Not Found)
+DELETE {{UserManagementAPI_HostAddress}}/api/users/{{missingUserId}}
+Authorization: Bearer {{DemoToken}}
